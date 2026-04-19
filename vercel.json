@@ -1,5 +1,11 @@
 {
+  "version": 2,
   "outputDirectory": "client/dist",
+  "functions": {
+    "api/*.js": {
+      "runtime": "vercel-node@latest"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/:path*",
