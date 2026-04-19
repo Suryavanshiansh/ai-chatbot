@@ -1,0 +1,11 @@
+{
+  "name": "ai-chatbot-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm install && npm run build"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
+  }
+}
