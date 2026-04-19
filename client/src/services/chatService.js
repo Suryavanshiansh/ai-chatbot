@@ -3,8 +3,14 @@ import axios from "axios";
 export const sendMessage = async (message) => {
   // Use relative path for production (Vercel)
   // For local development, this still works if you use a proxy or run from the same host
-  const res = await axios.post("/api/chat", {
-    message,
-  });
-  return res.data.reply;
+  try {
+    const res = await axios.post("/api/chat", {
+      message,
+    });
+    return res.data.reply;
+  } catch (error) {
+    console.error("DEBUG: Chat API Error Status:", error.response?.status);
+    console.error("DEBUG: Chat API Error Data:", error.response?.data);
+    throw error;
+  }
 };
