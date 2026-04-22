@@ -1,35 +1,29 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     const { message } = req.body;
-    const apiKey = process.env.GEMINI_API_KEY;
-    
-    // Diagnostic log (will show in Vercel dashboard logs)
-    if (apiKey) {
-      console.log(`API Key found (starts with: ${apiKey.substring(0, 4)}...)`);
-    } else {
-      console.error("GEMINI_API_KEY is MISSING in Vercel Environment Variables");
-    }
 
-    if (!apiKey) {
-      return res.status(500).json({ error: "Gemini API key is not configured on Vercel." });
-    }
+    const client = new OpenAI({
+      apiKey: process.env.NVIDIA_API_KEY,
+      baseURL: "https://integrate.api.nvidia.com/v1",
+    });
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await client.chat.completions.create({
+      model: "meta/llama3-8b-instruct", // lighter & faster
+      messages: [{ role: "user", content: message }],
+    });
 
-    const result = await model.generateContent(message);
-    const responseText = result.response.text();
-
-    return res.status(200).json({ reply: responseText });
+    return res.status(200).json({
+      reply: response.choices[0].message.content,
+    });
 
   } catch (error) {
-    console.error("Gemini API Error:", error.message || error);
-    return res.status(500).json({ error: "Check Vercel logs for API error details." });
+    console.error("API ERROR:", error);
+    return res.status(500).json({ error: "AI error" });
   }
 }
