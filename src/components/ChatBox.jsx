@@ -29,9 +29,10 @@ export default function ChatBox() {
       setMessages((prev) => [...prev, { role: "bot", text: reply }]);
     } catch (error) {
       console.error("Error:", error);
+      const errorMsg = error.response?.data?.error || "Failed to get response from server";
       setMessages((prev) => [
         ...prev,
-        { role: "bot", text: "⚠️ Failed to get response from server" },
+        { role: "bot", text: `⚠️ ${errorMsg}` },
       ]);
     } finally {
       setIsLoading(false);
